@@ -1,0 +1,47 @@
+---
+ - hosts: localhost
+   vars_files:
+           - "aws_var.yml"
+   tasks:
+      - name: "provisioning ec2-instance in your account"
+        ec2_instance:
+           key_name: "{{ key }}"
+           instance_type: "{{ instancetype }}"
+           image_id: "{{ imageid }}"
+           name: "{{ osname }}"
+           vpc_subnet_id: "{{ subnetid }}"
+           network:
+              assign_public_ip: yes
+           region: "{{ region_name }}"
+           state: present
+           security_group: "{{ security }}"
+           aws_access_key: "{{ awsaccess }}"
+           aws_secret_key: " {{ awssecret }}"
+        register: X
+      - debug:
+           var: X.instances[0].public_ip_address
+      - copy:
+          content: "{{ X.instances[0].public_ip_address }}"
+          dest: "/root/ip1.txt"
+      - name: pausing 
+        pause:
+           minutes: 1
+
+ - hosts: all
+   tasks:
+      - name: Installing httpd
+        package:
+           name: "httpd"
+      - name: Creating content
+        copy:
+           content: "This is my dynamic ip webserver"
+           dest: "/var/www/html/index.html"
+      - name: starting services
+        service:
+           name: "httpd"
+           state: started
+
+
+
+
+           

@@ -1,0 +1,43 @@
+---
+ - hosts: "localhost"
+   vars_files:
+           - "aws_var.yml"
+   tasks:
+    - name: Launching EC2-instance
+      ec2:
+        region: "{{ region_name }}"
+        image: "{{ imageid }}"
+        instance_type: "{{ instancetype }}"
+        vpc_subnet_id: "{{ subnetid }}"
+        instance_tags:
+                Name: "{{ osname }}"
+        assign_public_ip: yes
+        state: present
+        key_name: "{{ key }}"
+        aws_access_key : "{{ awsaccess }}"
+        aws_secret_key : "{{ awssecret }}"
+        wait: yes
+        wait_timeout: 500
+      register: X 
+    - debug:
+          var: X.instances[0].public_ip
+    - copy:
+        content: "{{ X.instances[0].public_ip }}"
+        dest: "/root/ip1.txt" 
+ - hosts: all 
+   tasks:
+      - name: Installing httpd
+        package:
+            name: "httpd"
+      - name: Copying content
+        copy:
+           content: "this is mt testing webserver"
+           dest: "/var/www/html/index.html"
+      - name: Starting web server
+        service:
+           name: httpd
+           state: started
+        
+
+       
+                 

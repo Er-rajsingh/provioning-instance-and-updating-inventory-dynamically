@@ -1,0 +1,9 @@
+#write the correct values between the double codes
+key: "mykeys"  #write your aws key_pair without extension
+instancetype: "t2.micro"  #your selection
+imageid: "ami-08f63db601b82ff5f"  #write your required image id
+subnetid: "subnet-c4272eac"  #your account subnet id
+osname: "my_os_launch_by_aws"  #write name which you want to give to this os
+security: "sg-0b70c8deaf0f92bbc" #write name of your pre-created security group having sutaible configured firewalld
+awsaccess: "Your_access_key"  #created through aws IAM user
+awssecret: "Your_secret_key"  #created through aws IAM user"
